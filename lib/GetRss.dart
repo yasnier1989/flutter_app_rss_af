@@ -39,4 +39,35 @@ class Noticia {
 
   Noticia(this._titulo, this._descripcion, this._fecha, this._urlImagen, this._urlNoticia);
 
+  get urlNoticia => _urlNoticia;
+
+  set urlNoticia(value) {
+    _urlNoticia = value;
+  }
+
+  get urlImagen => _urlImagen;
+
+  set urlImagen(value) {
+    _urlImagen = value;
+  }
+
+  get fecha => _fecha;
+
+  set fecha(value) {
+    _fecha = value;
+  }
+
+  get descripcion => _descripcion;
+
+  set descripcion(value) {
+    _descripcion = value;
+  }
+
+  String get titulo => _titulo;
+
+  set titulo(String value) {
+    _titulo = value;
+  }
+
+
 }

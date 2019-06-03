@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_rss_af/NewsDetails.dart';
 
 import 'GetRss.dart';
 
@@ -30,24 +31,81 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
 
   @override
   Widget build(BuildContext context) {
-
-   setState(() {
-     GetRss.getRss();
-   });
+    setState(() {
+      GetRss.getRss();
+    });
     return Scaffold(
       appBar: AppBar(
-
         title: Text(widget.title),
       ),
-      body: Center(
 
-        child: null,
+      body: Center(
+        child: FutureBuilder(
+            future: GetRss.getRss(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                // TODO: Handle this case.
+                  break;
+                case ConnectionState.waiting:
+                  return Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(Icons.cloud_download),
+                        Text("Cargando Información...")
+                      ],
+                    ),
+                  );
+                  break;
+                case ConnectionState.active:
+                // TODO: Handle this case.
+                  break;
+                case ConnectionState.done:
+                  return Container(
+                    child: ListView.separated(
+                        itemBuilder: (BuildContext context, int index) {
+                          String url;
+                          if (snapshot.data[index].urlImagen != "") {
+                            url = snapshot.data[index].urlImagen;
+                          } else {
+                            url = "https://dx-world.net/wp-content/uploads/2017/10/no-news-good-news.png";
+                          }
+                          return ListTile(
+                            leading: Image.network(url),
+                            title: Text(snapshot.data[index].titulo,
+                              style: TextStyle(fontSize: 15, color: Colors.black54),),
+                            subtitle: Text(snapshot.data[index].fecha,
+                              style: TextStyle(fontSize: 15, color: Colors.black),),
+                            onTap: () {
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) =>
+                                    NewsDetails(
+                                      title: "Noticia",
+                                      url: snapshot.data[index].urlNoticia,
+                                      key: null,
+                                    ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        separatorBuilder: (context, index) =>
+                            Divider(
+                              color: Colors.grey,
+                            ),
+                        itemCount: snapshot.data.length
+                    ),
+                  );
+                  break;
+              }
+            }),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: null,
         tooltip: 'Increment',
